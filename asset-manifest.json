@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/detectiveclub/static/css/main.073c9b0a.css",
-    "main.js": "/detectiveclub/static/js/main.e9c21104.js",
-    "static/js/787.841a3dbc.chunk.js": "/detectiveclub/static/js/787.841a3dbc.chunk.js",
-    "index.html": "/detectiveclub/index.html",
-    "main.073c9b0a.css.map": "/detectiveclub/static/css/main.073c9b0a.css.map",
-    "main.e9c21104.js.map": "/detectiveclub/static/js/main.e9c21104.js.map",
-    "787.841a3dbc.chunk.js.map": "/detectiveclub/static/js/787.841a3dbc.chunk.js.map"
+    "main.css": "/dc/static/css/main.073c9b0a.css",
+    "main.js": "/dc/static/js/main.28904874.js",
+    "static/js/787.841a3dbc.chunk.js": "/dc/static/js/787.841a3dbc.chunk.js",
+    "index.html": "/dc/index.html",
+    "main.073c9b0a.css.map": "/dc/static/css/main.073c9b0a.css.map",
+    "main.28904874.js.map": "/dc/static/js/main.28904874.js.map",
+    "787.841a3dbc.chunk.js.map": "/dc/static/js/787.841a3dbc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.e9c21104.js"
+    "static/js/main.28904874.js"
   ]
 }
