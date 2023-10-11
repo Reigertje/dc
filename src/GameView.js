@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, Container, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
@@ -32,37 +32,66 @@ const MessageDialog = ({ open, handleClose, handleMessageBroadcast }) => {
   </Dialog>
 }
 
-const SecretMessage = ({ secretMessage, messageMeta, player }) => {
-    const [revealed, setRevealed] = useState(0);
-    const { conspirator, recipients, broadcaster } = messageMeta;
-    const isRecipient = recipients.includes(player);
-    
+const NoMessage = () => {
+    return <div><h3>Waiting for message...</h3></div>;
+}
+
+const SecretMessage = ({ secretMessage, isConspirator }) => {
+    const [opacity, setOpacity] = useState(0);
+
     useEffect(() => {
-        if (revealed > 0) {
-            const timeout = setTimeout(() => { setRevealed(revealed - 0.1)}, 150)
+        if (opacity > 0) {
+            const timeout = setTimeout(() => { setOpacity(opacity - 0.1)}, 150)
             return () => clearTimeout(timeout);
         }
-    }, [revealed])
+    }, [opacity])
 
-    const title = player === broadcaster ? `Secret message sent to ${recipients.length - 1} people` : isRecipient ? "Secret message available:" : "No messages.";
+    return (<>
+        <Button 
+            color="error" 
+            onClick={() => setOpacity(1)} 
+            variant="contained" size="large" 
+            startIcon={<VisibilityIcon />}
+        >
+            Reveal
+        </Button>
+        { opacity > 0 && <div style={{ opacity }}>
+            { isConspirator ? <>
+                <h2 style={{ color: "red", marginBottom: "2px" }}>{"<ACCESS DENIED>"}</h2>
+                <h5 style={{ marginTop: "2px"}}>(you are the conspirator)</h5>
+            </>
+            : 
+            <h1 style={{ opacity }}>
+                "{secretMessage && secretMessage.trim()}"
+            </h1>
+            }
+        </div>}
+    </>)
+}
+
+const Message = ({ secretMessage, messageMeta, player }) => {
+    
+    if (!messageMeta) {
+        return <NoMessage />;
+    }
+    
+    const { conspirator, recipients, broadcaster } = messageMeta;
+
+    const isRecipient = recipients.includes(player);
+    const isConspirator = player === conspirator;
+    const isBroadcaster = player === broadcaster;    
+
+    if (!isRecipient) {
+        return <NoMessage />;
+    }
+
+    const title = isBroadcaster ? `Your message was broadcasted to ${recipients.length - 1} people` : `Secret message received`;
 
     return <div>
         <h3>{title}</h3>
-        { isRecipient && <>
-            <Button color="error" onClick={() => setRevealed(1)} variant="contained" size="large" startIcon={<VisibilityIcon />}>Reveal</Button>
-            {revealed > 0 && <>
-                { player === conspirator ? 
-                    <div style={{ opacity: revealed }}>
-                        <h2 style={{ color: "red", marginBottom: "2px" }}>{"<MESSAGE REDACTED>"}</h2>
-                        <h5 style={{ marginTop: "2px"}}>(you are the conspirator)</h5>
-                    </div> 
-                    : 
-                    <h1 style={{ opacity: revealed }}>
-                        "{secretMessage && secretMessage.trim()}"
-                    </h1>
-                }
-            </>}
-        </>}
+        <div>
+            <SecretMessage secretMessage={secretMessage} isConspirator={isConspirator} />
+        </div>
     </div>
 }
 
@@ -95,16 +124,16 @@ const GameView = ({ playerId }) => {
                 { players.length } { players.length === 1 ? "detective" : "detectives" } present
             </div>
             <div style={{marginTop: "8px"}}>
-                <Button size="small" onClick={startNewBroadcast}>
+                <Button size="small" onClick={startNewBroadcast} disableRipple>
                     Broadcast message
                 </Button>
             </div>
             <div style={{ marginTop: "32px"}}>
-                {messageMeta && <SecretMessage secretMessage={secretMessage} messageMeta={messageMeta} player={playerId} />}
+                <Message secretMessage={secretMessage} messageMeta={messageMeta} player={playerId} />
             </div>
         </div>
         </Container>
-        <MessageDialog open={showMessageDialog} handleClose={() => setShowMessageDialog(false)} handleMessageBroadcast={message => broadcastMessage(message, players, playerId)} />
+        { showMessageDialog && <MessageDialog open={true} handleClose={() => setShowMessageDialog(false)} handleMessageBroadcast={message => broadcastMessage(message, players, playerId)} /> }
     </div>;
 }
 
