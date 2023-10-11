@@ -1,13 +1,25 @@
 import './App.css';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { makeStyles } from "@mui/styles";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import useAuthentication from './use_authentication';
 import useGameData from './use_game_data';
 import { joinGame, broadcastMessage, clearMessage } from './game_actions';
 
+const useStyles = makeStyles({
+  topScrollPaper: {
+    alignItems: 'flex-start',
+  },
+  topPaperScrollBody: {
+    verticalAlign: 'top',
+  },
+});
+
 const MessageDialog = ({ open, handleClose, handleMessageBroadcast }) => {
+  const classes = useStyles()
+
   const [secretMessage, setSecretMessage] = useState("");
 
   const handleSubmit = (e) => {
@@ -17,7 +29,10 @@ const MessageDialog = ({ open, handleClose, handleMessageBroadcast }) => {
     e.preventDefault();
   }
 
-  return <Dialog open={open} onClose={handleClose}>
+  return <Dialog open={open} onClose={handleClose} classes={{
+        scrollPaper: classes.topScrollPaper,
+        paperScrollBody: classes.topPaperScrollBody,
+      }}>
     <DialogTitle>
       Broadcast secret message
     </DialogTitle>
