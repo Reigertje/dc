@@ -1,25 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useEffect, useState } from 'react';
+import { getDatabase, ref, onValue } from "firebase/database";
+import GameView from './GameView';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const NewApp = () => {
+  const [connected, setConnected] = useState(false);
+  const db = getDatabase();
+
+  useEffect(() => {
+    onValue(ref(db, ".info/connected"), (snap) => {
+      if (snap.val() === true) {
+        setConnected(true);
+      } else {
+        setConnected(false);
+      }
+    });
+  }, [db])
+
+  return <>
+    <span style={{ fontSize: "10px", textAlign: "center"}}>{ connected ? "🟢 Connected " : "🔴 Not Connected" }</span>
+    { connected && <GameView /> }
+  </>
+
 }
 
-export default App;
+export default NewApp;
