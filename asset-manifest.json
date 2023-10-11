@@ -1,16 +1,15 @@
 {
   "files": {
     "main.css": "/detectiveclub/static/css/main.073c9b0a.css",
-    "main.js": "/detectiveclub/static/js/main.23a737da.js",
+    "main.js": "/detectiveclub/static/js/main.e9c21104.js",
     "static/js/787.841a3dbc.chunk.js": "/detectiveclub/static/js/787.841a3dbc.chunk.js",
-    "static/media/logo.svg": "/detectiveclub/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/detectiveclub/index.html",
     "main.073c9b0a.css.map": "/detectiveclub/static/css/main.073c9b0a.css.map",
-    "main.23a737da.js.map": "/detectiveclub/static/js/main.23a737da.js.map",
+    "main.e9c21104.js.map": "/detectiveclub/static/js/main.e9c21104.js.map",
     "787.841a3dbc.chunk.js.map": "/detectiveclub/static/js/787.841a3dbc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.23a737da.js"
+    "static/js/main.e9c21104.js"
   ]
 }
