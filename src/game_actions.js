@@ -1,11 +1,12 @@
 import { getDatabase, ref, set, onDisconnect, remove } from "firebase/database";
 
-export const joinGame = (playerId) => {
+export const joinGame = (playerId, username) => {
     const db = getDatabase();
     const playerRef = ref(db, `players/${playerId}`);
         
     set(playerRef, {
-        id: playerId
+        id: playerId,
+        username: username
     })
     onDisconnect(playerRef).remove();
 }
@@ -21,7 +22,10 @@ export const joinGame = (playerId) => {
 }
 
 export const broadcastMessage = (secretMessage, players, activePlayer) => {
-    const conspirator = selectConspirator(players, activePlayer);
+
+    const playerIds = players.map(player => player.id);
+
+    const conspirator = selectConspirator(playerIds, activePlayer);
 
     if (!conspirator) return;
     
@@ -33,7 +37,7 @@ export const broadcastMessage = (secretMessage, players, activePlayer) => {
         meta: { 
             conspirator_uid: conspirator,
             broadcaster_uid: activePlayer,
-            recipients_uids: players.join(',')
+            recipients_uids: playerIds.join(',')
         }
     });
 }

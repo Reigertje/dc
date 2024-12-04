@@ -6,6 +6,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import useAuthentication from './use_authentication';
 import useGameData from './use_game_data';
+import useUsername from './use_username';
 import { joinGame, broadcastMessage, clearMessage } from './game_actions';
 
 const useStyles = makeStyles({
@@ -110,14 +111,31 @@ const Message = ({ secretMessage, messageMeta, player }) => {
     </div>
 }
 
+const JoinGameView = ({ onJoinGame }) => {
+    const [username, setUsername] = useState(null)
+    return <div>
+        <h3>Join the game</h3>
+        <div style={{ textAlign: "center"}}>
+            Enter your name to join
+        </div>
+        <div>
+            <TextField inputProps={{[`data-1p-ignore`]: true}} type="input" value={username} onChange={(e) => setUsername(e.target.value)}/>
+        </div>
+        <Button disabled={!username || username.length === 0}size="small" disableRipple onClick={() => onJoinGame(username)}>
+            Join
+        </Button>
+    </div>
+}
+
 const GameView = ({ playerId }) => {
     const gameData = useGameData();
     const [showMessageDialog, setShowMessageDialog] = useState(false);
     const { loading, players, secretMessage, messageMeta } = gameData;
+    const { username, updateUsername } = useUsername();
 
     useEffect(() => {
-        joinGame(playerId);
-    }, [playerId])
+        joinGame(playerId, username);
+    }, [playerId, username])
 
     const startNewBroadcast = () => {
         if (messageMeta) {
@@ -132,12 +150,17 @@ const GameView = ({ playerId }) => {
 
     if (loading) return null;
 
+
     return <div style={{ marginTop: "24px" }}>
         <Container maxWidth="sm">
             <div style={{ textAlign: "center"}}>
             <div style={{ textAlign: "center" }}>
-                { players.length } { players.length === 1 ? "detective" : "detectives" } present
+                { players.length } { players.length === 1 ? "detective" : "detectives" } present:
+                <div>
+                    { players.map((p, i) => <span key={i}>{p.id === playerId ? <b>{`${p.username} (you)`}</b> : p.username}{i < players.length - 1 ? ", " : ""}</span>) }
+                </div>
             </div>
+            { username ? <>
             <div style={{marginTop: "8px"}}>
                 <Button size="small" onClick={startNewBroadcast} disableRipple>
                     Broadcast message
@@ -146,6 +169,10 @@ const GameView = ({ playerId }) => {
             <div style={{ marginTop: "32px"}}>
                 <Message secretMessage={secretMessage} messageMeta={messageMeta} player={playerId} />
             </div>
+            </>
+            : <JoinGameView onJoinGame={(newUsername) => {
+                updateUsername(newUsername);
+            }} /> }
         </div>
         </Container>
         { showMessageDialog && <MessageDialog open={true} handleClose={() => setShowMessageDialog(false)} handleMessageBroadcast={message => broadcastMessage(message, players, playerId)} /> }

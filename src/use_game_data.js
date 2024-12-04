@@ -35,7 +35,15 @@ const useGameData = () => {
 
         onValue(playerRef, snapshot => {
             const val = snapshot.val();
-            setPlayers(val ? Object.keys(snapshot.val()) : []);
+            const playerList = []
+            if (val) {
+                Object.keys(val).forEach(key => {
+                    if (val[key].username) {
+                        playerList.push({ id: val[key].id, username: val[key].username })
+                    }
+                })
+            }
+            setPlayers(playerList);
         });
     }, [db])
 
