@@ -132,10 +132,19 @@ const GameView = ({ playerId }) => {
     const [showMessageDialog, setShowMessageDialog] = useState(false);
     const { loading, players, secretMessage, messageMeta } = gameData;
     const { username, updateUsername } = useUsername();
+    const [ lastConspirator, setLastConspirator] = useState(null);
 
     useEffect(() => {
-        joinGame(playerId, username);
+        if (username) {
+            joinGame(playerId, username);
+        }
     }, [playerId, username])
+
+    useEffect(() => {
+        if (messageMeta && messageMeta.conspirator) {
+            setLastConspirator(messageMeta.conspirator);
+        }
+    }, [messageMeta, setLastConspirator])
 
     const startNewBroadcast = () => {
         if (messageMeta) {
@@ -175,7 +184,7 @@ const GameView = ({ playerId }) => {
             }} /> }
         </div>
         </Container>
-        { showMessageDialog && <MessageDialog open={true} handleClose={() => setShowMessageDialog(false)} handleMessageBroadcast={message => broadcastMessage(message, players, playerId)} /> }
+        { showMessageDialog && <MessageDialog open={true} handleClose={() => setShowMessageDialog(false)} handleMessageBroadcast={message => broadcastMessage(message, players, playerId, lastConspirator)} /> }
     </div>;
 }
 

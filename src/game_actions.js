@@ -11,21 +11,27 @@ export const joinGame = (playerId, username) => {
     onDisconnect(playerRef).remove();
 }
 
-
- const selectConspirator = (players, activePlayer) => {
+const selectConspirator = (players, activePlayer, lastConspirator) => {
   
     const otherPlayers = players.filter(player => player !== activePlayer);
 
-    if (otherPlayers.length === 0) return null;
+    const withoutConspirator = otherPlayers.filter(player => player !== lastConspirator);
 
-    return otherPlayers[Math.floor(Math.random()*otherPlayers.length)]
+    // Create a list with all players listed twice, but the last conspirator only once
+    // To create a slight bias against the last conspirator to be selected again
+    const selectionList = [...otherPlayers, ...withoutConspirator];
+
+    if (selectionList.length === 0) return null;
+
+    const selection = selectionList[Math.floor(Math.random()*selectionList.length)];
+    return selection;
 }
 
-export const broadcastMessage = (secretMessage, players, activePlayer) => {
+export const broadcastMessage = (secretMessage, players, activePlayer, lastConspirator) => {
 
     const playerIds = players.map(player => player.id);
 
-    const conspirator = selectConspirator(playerIds, activePlayer);
+    const conspirator = selectConspirator(playerIds, activePlayer, lastConspirator);
 
     if (!conspirator) return;
     
